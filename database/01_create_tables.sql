@@ -18,11 +18,15 @@ CREATE TABLE categories (
 CREATE TABLE expenses (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
-    category_id INT NOT NULL,
+    category_id INT,
     amount INT NOT NULL,
-    date DATE NOT NULL,
     memo VARCHAR(255),
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    expense_date DATE NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users (id),
     FOREIGN KEY (category_id) REFERENCES categories (id)
 );
+
+ALTER TABLE expenses MODIFY category_id INT NULL;
+
+DESC expenses;
