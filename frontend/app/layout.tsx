@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Header from "@components/layout/Header";
+import EmotionRegistry from "@/components/providers/EmotionRegistry";
+import MuiProvider from "@/components/providers/MuiProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,10 +27,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <meta name="emotion-insertion-point" content="emotion-insertion-point" />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <EmotionRegistry>
+          <MuiProvider>
+            <Header />
+            {children}
+          </MuiProvider>
+        </EmotionRegistry>
       </body>
     </html>
   );
