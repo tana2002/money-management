@@ -1,19 +1,19 @@
 const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
-    const authHeader = req.headers.authorization;
+  const authHeader = req.headers.authorization;
 
-    if (!authHeader) {
-        return res.status(401).json({ message: 'トークンがありません' });
-    }
+  if (!authHeader) {
+    return res.status(401).json({ message: 'トークンがありません' });
+  }
 
-    const token = authHeader.split(' ')[1];
+  const token = authHeader.split(' ')[1];
 
-    try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        req.userId = decoded.userId;
-        next();
-    } catch (err) {
-        res.status(401).json({ message: 'トークンが無効です' });
-    }
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded;
+    next();
+  } catch (err) {
+    res.status(401).json({ message: 'トークンが無効です' });
+  }
 };

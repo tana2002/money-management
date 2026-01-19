@@ -2,6 +2,7 @@ const express = require('express');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const db = require('../db');
+const auth = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -49,7 +50,7 @@ router.post('/login', async (req, res) => {
     }
 
     const token = jwt.sign(
-      { userId: user.id },
+      { userId: user.id, login_id: user.login_id },
       process.env.JWT_SECRET,
       { expiresIn: '1h' }
     );
@@ -91,6 +92,34 @@ router.post('/guest-login', async (req, res) => {
         is_guest: true,
       },
     });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: 'サーバーエラー' });
+  }
+});
+
+router.delete('/users/me', auth, async (req, res) => {
+  try {
+    const { login_id } = req.user;
+
+    if (!login_id) {
+      return res.status(401).json({ message: '認証情報が不正です' });
+    }
+
+    if (login_id === 'guest') {
+      return res.status(403).json({ message: 'ゲストユーザーは削除できません' });
+    }
+
+    const [result] = await db.query(
+      'DELETE FROM users WHERE login_id = ?',
+      [login_id]
+    );
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: 'ユーザーが存在しません' });
+    }
+
+    res.json({ message: 'アカウントを削除しました' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'サーバーエラー' });

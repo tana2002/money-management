@@ -48,3 +48,23 @@ export async function register(login_id: string, password: string) {
 
   return res.json(); // { token, user }
 }
+
+/* アカウント削除 */
+export async function deleteAccount() {
+  const token = localStorage.getItem('token');
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/auth/users/me`,
+    {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => null);
+    throw new Error(body?.message ?? 'アカウント削除に失敗しました');
+  }
+}
