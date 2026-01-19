@@ -1,14 +1,22 @@
 "use client";
 
+/* ヘッダーコンポーネント */
+
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import { useRouter } from "next/navigation";
+import Sidebar from './Sidebar';
 
 export default function ButtonAppBar() {
   const router = useRouter();
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    router.push("/login");
+  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -32,6 +40,8 @@ export default function ButtonAppBar() {
             家計簿アプリ
           </Typography>
           <Button color="inherit" onClick={() => router.push("/login")}>Login</Button>
+          <Button variant="outlined" color="error" onClick={handleLogout}>logout</Button>
+          <Sidebar />
         </Toolbar>
       </AppBar>
     </Box>
